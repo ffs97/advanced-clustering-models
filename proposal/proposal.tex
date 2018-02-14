@@ -131,13 +131,13 @@ In this course project, we aim to solve the problem of uncovering both the numbe
     \begin{align*}
         \vp(\vx,\vz)=\vp(\vx|\vz)\vp(\vz)
     \end{align*}
-    with observed $\vx \in \mathcal{X}$, where $\mathcal{X}$ can be continuous, discrete, or latent. Suppose that given a dataset $\mathbb{D}= \{x^1,\ldots,x^n\}$, we may be interested in the following inference and learning tasks: 
+    with observed $\vx \in \mathcal{X}$, where $\mathcal{X}$ can be continuous, discrete, or latent. Suppose that given a dataset $\mathbb{D}= \{x^1,\ldots,x^n\}$, we may be interested in the following inference and learning tasks:
     \begin{itemize}
         \item Learning the parameters $\theta$ of $\vp$.
         \item Approximate posterior inference over $\vz$.
         \item Approximate marginal inference over $\vx$.
     \end{itemize}
-    
+
     Auto-encoding variational Bayes (AEVB) is an algorithm that can efficiently solve these three inference and learning tasks; the variational auto-encoder being one instantiation of this algorithm. In variational inference, we are interested in maximizing the evidence lower bound (ELBO)
     \begin{align*}
         \mathcal{L}(\vp_\theta,\vq_\phi)=\mathbb{E}_{\vq_\phi(\vz|\vx)}[\text{log } \vp_\theta(\vx,\vz)-\text{log } \vq_\phi(\vz|\vx)]
@@ -147,7 +147,7 @@ In this course project, we aim to solve the problem of uncovering both the numbe
         \text{log } \vp_\theta(\vx)= \mathbb{KL}[\vq_\phi(\vz|\vx)||\vp_\theta(\vz|\vx)]+\mathcal{L}(\vp_\theta,\vq_\phi)
     \end{align*}
     Since $\vx$ is fixed, we can define $\vq_\phi(\vz|\vx)$ to be conditioned on $\vx$ meaning that we are effectively choosing a different $\vq(\vz)$ for every $\vx$, which will produce a better posterior approximation than always choosing the same $\vq(\vz)$. Now the question is how we optimize over $\vq(\vz|\vx)$?
-    
+
     One approach called black-box variational inference consists of maximizing the ELBO using gradient descent over $\phi$ only assuming that $\vq_\phi$ is differentiable in its parameters $\phi$ which involves computing the gradient
     \begin{align*}
         \nabla_{\theta,\phi} \mathbb{E}_{\vq_\phi(\vz)}[\text{log } \vp_\theta(\vx,\vz)-\text{log } \vq_\phi(\vz)]
@@ -158,20 +158,20 @@ In this course project, we aim to solve the problem of uncovering both the numbe
         \mathbb{E}_{\vq_\phi(\vz)}[(\text{log } \vp_\theta(\vx,\vz)-\text{log } \vq_\phi(\vz))\nabla_{\phi}\text{log } \vq_\phi(\vz)]
     \end{align*}
     which follows from some basic algebra and calculus \citep{Mnih}.
-    
+
     The above identity referred to as score function estimator places the gradient inside the expectation, which we may now evaluate using Monte Carlo. Unfortunately, the score function estimator has an important shortcoming: it has a high variance. The key contribution of the VAE paper \citep{VAE} is to propose an alternative estimator that is much better behaved which is done in two steps: we first reformulate the ELBO so that parts of it can be computed in closed form (without Monte Carlo), and then we use an alternative gradient estimator, based on the so-called \textit{reparametrization trick}.
-    
+
     By rearranging the ELBO we get the reformulation called SGVB estimator as follows:
     \begin{align*}
         \text{log } \vp(x) \geq \mathbb{E}_{\vq_\phi(\vz|\vx)}[\text{log } \vp_\theta(\vx|\vz)]-\mathbb{KL}[\vq_\phi(\vz|\vx)||\vp(\vz)]
     \end{align*}
-    
+
     We may think of $\vx$ as an observed data point. The left-hand side consists of two terms, both of which involve taking a sample $\vz \sim \vq_\phi(\vz|\vx)$, which we can interpret as a code describing $\vx$. So we refer to $\vq$ as the \textit{encoder}.
-    
+
     In the first term, $\text{log } \vp_\theta(\vx|\vz)$ is the log-likelihood of the observed $\vx$ given the encoding $\vz$ that we have sampled. This term is maximized when $\text{log } \vp_\theta(\vx|\vz)$ assigns high probability to the original $\vx$. So the attempt is to reconstruct $\vx$ given the encoding $\vz$. Hence we call $\text{log } \vp_\theta(\vx|\vz)$ the \textit{decoder} and the term is called the \textit{reconstruction error}.
-    
+
     The second term is the divergence between $\vq_\phi(\vz|\vx)$ and the prior $\vp(\vz)$, which we will fix to be $\mathcal{N}(0,\vI)$. It encourages the encodings $\vz$ to look Gaussian. We call it the regularization term. It prevents $\vq_\phi(\vz|\vx)$ from encoding the distribution in arbitrary space and instead forces it to stay close to the prior distribution, so that at test time when we sample from this prior, we indeed get good results.
-    
+
     Now we can talk about the reparametrization trick to get a low-variance gradient estimator for optimizing our objective. Under certain mild conditions, we may express the distribution $\vq_\phi(\vz|\vx)$ as the following two-step generative process:
     \begin{center}
         First, we sample a noise variable $\epsilon$ from a simple distribution like the standard Normal\\ $\epsilon\sim\mathcal{N}(0,\vI)$\\
@@ -249,7 +249,7 @@ In more precise terms, assuming our latent representation of the data lies in $\
 
 Note that $Dir(\valpha)$ defines a Dirichlet distribution over the mixing proportions and $NIW(\vlambda)$ defines Normal-Inverse-Wishart distributions over the parameters associated with each cluster. Moreover, $p(\vgamma)$ defines the distribution over the parameters of the encoder-decoder model and $\vmu(\vx_n;\vgamma)$ and $\vSigma(\vx_n;\vgamma)$ are neural networks with parameters $\vgamma$ which map $\vx_n$ to the observed data $\vy_n$.
 
-The model performs inference by using recognition networks to produce local evidence potentials which are then incorporated in the general graphical model inference algorithm that sits on top. It uses a conditional random field (CRF) variational family and learns recognition networks that output conjugate graphical model potentials instead of complete variational distribution's parameters. These potentials are then used in the graphical model inference algorithms in place of non-conjugate likelihoods. 
+The model performs inference by using recognition networks to produce local evidence potentials which are then incorporated in the general graphical model inference algorithm that sits on top. It uses a conditional random field (CRF) variational family and learns recognition networks that output conjugate graphical model potentials instead of complete variational distribution's parameters. These potentials are then used in the graphical model inference algorithms in place of non-conjugate likelihoods.
 
 The disadvantage of the model is that it has been worked on only in the parametric setting where the number of clusters present in the data is provided to the network. Hence, though the model efficiently learns the shapes of the clusters, it doesn't give us the number of clusters present in the data. At the same time, it is worth pointing out that this model, through the use of Neural Networks, scales up to increasing amounts of data very efficiently.
 \end{psubsection}
@@ -264,7 +264,7 @@ To achieve this aim, we describe the following generative story:
 		\item Draw mixture weights $\vpi \sim Gem(\eta)$
 		\item {For each component  c $= 1,...,\infty$
 			\begin{enumerate}
-			    \item Draw $(\vmu_k,\vSigma_k) \sim NIW(\vlambda)$	
+			    \item Draw $(\vmu_k,\vSigma_k) \sim NIW(\vlambda)$
 			\end{enumerate}}
 		\item Draw parameters of the encoder and decoder model $\vgamma \sim p(\vgamma)$
 		\item For each obsevation n $= 1,...,N$
