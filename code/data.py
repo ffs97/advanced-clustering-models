@@ -1,4 +1,5 @@
 import numpy as np
+import tensorflow as tf
 
 
 def spiral(N):
@@ -21,3 +22,9 @@ def circular_data(len):
         p = np.random.uniform(-np.pi, np.pi)
         data.append([np.cos(p), np.sin(p)])
     return np.array(data)
+
+
+def xavier_init(size):
+    in_dim = size[0]
+    xavier_stddev = 1. / tf.sqrt(in_dim / 2.)
+    return tf.random_normal(shape=size, stddev=xavier_stddev)

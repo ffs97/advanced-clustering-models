@@ -1,1 +1,5 @@
 *.vscode*
+*.pyc
+*.swp
+*.zip
+*.tar.*
