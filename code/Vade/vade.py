@@ -7,11 +7,13 @@ from sklearn.manifold import TSNE
 
 ds = tf.contrib.distributions
 mnist = input_data.read_data_sets("mnist_data/")
-latent_size = 2
+latent_size = 10
 K=10
 batch_size = 100
-epochs = 2000
+epochs = 5000
 epoch_len = len(mnist.train.images)/batch_size
+alpha = 0.0
+beta = 1.
 
 initializer = tf.contrib.layers.xavier_initializer()
 
@@ -67,7 +69,7 @@ def vae_loss(gam,out,mean,log_var,mu):
 	f += y[-1,:]
 	return tf.reduce_mean(f)
 
-def update_mu(mean,gam):
+def update_mu(mu,mean,gam):
 	def fn(previous_output,current_input):
 		i = current_input
 		t = tf.matmul(tf.reshape(gam[:,i],[1,bs]),mean)
@@ -76,21 +78,21 @@ def update_mu(mean,gam):
 
 	elems = tf.Variable(tf.range(K))
 	m = tf.scan(fn,elems,initializer = tf.ones([latent_size]))
-	return m
+	return alpha*mu + beta*m
 
-def update_pi(gam):
+def update_pi(pi,gam):
 	d = tf.reduce_sum(gam,axis=0)/tf.cast(bs,tf.float32)
-	return d
+	return alpha*pi + beta*d
 
-def update_var(log_var,mean,gam):
+def update_var(sigma,log_var,mean,gam):
 	s = tf.matmul(tf.reshape(gam[:,0],[1,bs]),(tf.exp(log_var) + tf.square(mean-mu[0])))/tf.reduce_sum(gam[:,0],axis=0)
 	for i in xrange(1,K):
 		t = tf.matmul(tf.reshape(gam[:,i],[1,bs]),(tf.exp(log_var) + tf.square(mean-mu[i])))/tf.reduce_sum(gam[:,i],axis=0)
 		s = tf.concat([s,t],0)
-	return s
+	return alpha*sigma + beta*s
 
 X = tf.placeholder(tf.float32,[None,784])
-mu = tf.Variable(tf.random_normal([K,latent_size]),trainable=False)
+mu = tf.Variable(tf.zeros([K,latent_size]),trainable=False)
 sigma = tf.Variable(tf.ones([K,latent_size]),trainable=False)
 pi = tf.Variable(tf.ones([K])/K,trainable=False)
 epsilon = tf.placeholder(tf.float32,[None,latent_size])
@@ -104,9 +106,9 @@ grad = tf.gradients(loss,X)
 
 _,gen = decoder(epsilon,True)
 
-update1 = pi.assign(update_pi(gam))
-update2 = mu.assign(update_mu(mean,gam))
-update3 = sigma.assign(update_var(log_var,mean,gam))
+update1 = pi.assign(update_pi(pi,gam))
+update2 = mu.assign(update_mu(mu,mean,gam))
+update3 = sigma.assign(update_var(sigma,log_var,mean,gam))
 
 learning_rate = tf.train.exponential_decay(.002,global_step,epoch_len*10,0.9,staircase=True)
 train_step = tf.train.AdamOptimizer(learning_rate).minimize(loss)
@@ -131,14 +133,15 @@ for i in xrange(epochs):
 	plt.savefig("plot.png")
 	plt.close()
 
-	# lat = sess.run(z,feed_dict={bs:10000,X:mnist.train.images[:10000,:],epsilon:np.random.randn(10000,latent_size)})
-	# plt.scatter(lat[:,0],lat[:,1],s=1,c=mnist.train.labels[:10000],cmap="tab10")
-	# plt.colorbar()
-	# plt.savefig("Latent.png")
-	# plt.close()
+	if i%10 == 0:
+		lat = sess.run(z,feed_dict={bs:1000,X:mnist.train.images[:1000,:],epsilon:np.random.randn(1000,latent_size)})
+		# plt.scatter(lat[:,0],lat[:,1],s=1,c=mnist.train.labels[:10000],cmap="tab10")
+		# plt.colorbar()
+		# plt.savefig("Latent.png")
+		# plt.close()
 
-	# embed = TSNE(n_components=2).fit_transform(lat)
-	# plt.scatter(embed[:,0],embed[:,1],s=1,c=mnist.train.labels[:1000],cmap="tab10")
-	# plt.colorbar()
-	# plt.savefig("TSNE.png")
-	# plt.close()
+		embed = TSNE(n_components=2).fit_transform(lat)
+		plt.scatter(embed[:,0],embed[:,1],s=1,c=mnist.train.labels[:1000],cmap="tab10")
+		plt.colorbar()
+		plt.savefig("TSNE.png")
+		plt.close()
