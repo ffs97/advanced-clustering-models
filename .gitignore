@@ -3,3 +3,4 @@
 *.swp
 *.zip
 *.tar.*
+*mnist_data*
