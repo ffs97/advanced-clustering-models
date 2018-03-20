@@ -60,8 +60,8 @@ Face generation by VaDE on CelebA
 
 1. Create a virtual environment using conda, and activate it
 	
-	>> $ conda create --name "VaDE" python=2.7
-	>> $ source activate VaDE
+	> $ conda create --name "VaDE" python=2.7
+	> $ source activate VaDE
 
 2. Install the following libraries using conda/pip
 
@@ -82,7 +82,7 @@ Face generation by VaDE on CelebA
 
 5. Create a ipython kernel for this environment (after activating)
 
-	>> $ python -m ipykernel install --user --name VaDE --display-name "Python 2 (VaDE)"
+	> $ python -m ipykernel install --user --name VaDE --display-name "Python 2 (VaDE)"
 
 6. Run the ipython notebook and enjoy.
 
