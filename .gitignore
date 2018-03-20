@@ -4,3 +4,4 @@
 *.zip
 *.tar.*
 *mnist_data*
+*.ipynb_checkpoints*

@@ -6,9 +6,6 @@ import tensorflow as tf
 import matplotlib.pyplot as plt
 import matplotlib.gridspec as gridspec
 
-from data import spiral
-from data import xavier_init
-
 
 class VAE(object):
     """
@@ -139,9 +136,3 @@ class VAE(object):
         plt.savefig(name)
         plt.close()
 
-
-size = 3000
-data = spiral(size)
-
-vae = VAE(2, 7, 64)
-vae.train(data, epochs=20000)
