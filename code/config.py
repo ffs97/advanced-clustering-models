@@ -1,9 +1,9 @@
 n_clusters = 10
 
 input_dim = 784
-latent_dim = 10
+latent_dim = 2
 
-n_epochs = 3
+n_epochs = 50
 batch_size = 100
 
 encoder_hidden_size = [500, 500, 2000]
