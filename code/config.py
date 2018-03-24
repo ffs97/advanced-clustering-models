@@ -4,7 +4,13 @@ input_dim = 784
 latent_dim = 10
 
 n_epochs = 3000
-batch_size = 100
+batch_size = 200
+
+pretrain_vae_n_epochs = 100
+
+pretrain_gmm_n_iters = 5000
+pretrain_gmm_n_inits = 10
+pretrain_gmm_train_size = 10000
 
 regularizer = 1
 
