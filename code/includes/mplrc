@@ -1,0 +1,108 @@
+## unix/linux:
+##      $HOME/.config/matplotlib/matplotlibrc or
+##      $XDG_CONFIG_HOME/matplotlib/matplotlibrc (if $XDG_CONFIG_HOME is set)
+## other platforms:
+##      $HOME/.matplotlib/matplotlibrc
+##
+## See http://matplotlib.org/users/customizing.html#the-matplotlibrc-file
+##
+## This file is best viewed in a editor which supports python mode
+## syntax highlighting. Blank lines, or lines starting with a comment
+## symbol, are ignored, as are trailing comments.  Other lines must
+## have the format
+##     key : val ## optional comment
+##
+## Colors: for the color values below, you can either use - a
+## matplotlib color string, such as r, k, or b - an rgb tuple, such as
+## (1.0, 0.5, 0.0) - a hex string, such as ff00ff - a scalar
+## grayscale intensity such as 0.75 - a legal html color name, e.g., red,
+## blue, darkslategray
+
+backend                     : TkAgg
+
+## LINES
+
+
+## PATCHES
+
+
+## HATCHES
+
+
+## Boxplot
+
+
+## FONT
+
+#font.sans-serif            : Ubuntu Mono, DejaVu Sans, Bitstream Vera Sans, Computer Modern Sans Serif, Lucida Grande, Verdana, Geneva, Lucid, Arial, Helvetica, sans-serif
+
+
+## TEXT
+
+
+## LaTeX
+
+
+## AXES
+
+axes.titlepad               : 20
+axes.titlesize              : medium
+axes.edgecolor              : red
+axes.spines.right           : false
+axes.spines.top             : false
+axes.formatter.use_mathtext : true
+axes.labelpad               : 10
+
+
+## DATES
+
+
+## TICKS
+
+xtick.labelsize             : small
+xtick.major.pad             : 10
+ytick.labelsize             : small
+ytick.major.pad             : 10
+
+
+## GRIDS
+
+
+## Legend
+
+
+## FIGURE
+
+figure.dpi                  : 180.0
+
+
+## IMAGES
+
+
+## CONTOUR PLOTS
+
+
+## ERRORBAR PLOTS
+
+
+## HISTOGRAM PLOTS
+
+
+## SCATTER PLOTS
+
+
+## PATHS
+
+
+## SAVING FIGURES
+
+savefig.dpi                 : 240.0
+
+
+## TK BACKEND PARAMS
+
+# ps backend params
+
+# pdf backend params
+
+# svg backend params
