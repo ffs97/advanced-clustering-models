@@ -31,20 +31,20 @@ class Config:
             self.n_clusters = 5
 
             self.input_dim = 2
-            self.latent_dim = 7
+            self.latent_dim = 10
 
             self.n_epochs = 1000
             self.batch_size = 200
 
-            self.pretrain_vae_n_epochs = 1500
+            self.pretrain_vae_n_epochs = 500
 
-            self.pretrain_gmm_n_iters = 1000
+            self.pretrain_gmm_n_iters = 1500
             self.pretrain_gmm_n_inits = 10
 
             self.regularizer = 1
 
-            self.encoder_hidden_size = [100, 100]
-            self.decoder_hidden_size = [100, 100]
+            self.encoder_hidden_size = [500, 500, 2000]
+            self.decoder_hidden_size = [2000, 500, 500]
 
             self.decay_steps = 10
             self.decay_rate = 0.9
